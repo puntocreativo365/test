@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Joel Ludeña · Digitalización que hace brillar tu negocio — Mallorca</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #06060F;
+    --violet: #8B5CF6;
+    --cyan: #22D3EE;
+    --fuchsia: #F0ABFC;
+    --pink: #FF2D9A;
+    --lime: #A3E635;
+    --ink: #EDEDF7;
+  }
+  * { -webkit-font-smoothing: antialiased; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    overflow-x: hidden;
+    cursor: none;
+  }
+  @media (hover: none), (max-width: 768px) { body { cursor: auto; } .cursor-dot, .cursor-glow { display: none; } }
+  a, button { cursor: none; }
+  @media (hover: none), (max-width: 768px) { a, button { cursor: pointer; } }
+
+  .font-display { font-family: 'Space Grotesk', sans-serif; }
+
+  /* ---------- AURORA BACKGROUND ---------- */
+  .aurora {
+    position: fixed; inset: 0; z-index: -2; overflow: hidden;
+    background: var(--bg);
+  }
+  .aurora::before, .aurora::after {
+    content: ''; position: absolute; width: 60vw; height: 60vw; border-radius: 50%;
+    filter: blur(110px); opacity: .5;
+  }
+  .aurora::before {
+    background: radial-gradient(circle, rgba(139,92,246,.55), transparent 60%);
+    top: -20vw; left: -15vw;
+    animation: drift1 18s ease-in-out infinite alternate;
+  }
+  .aurora::after {
+    background: radial-gradient(circle, rgba(34,211,238,.4), transparent 60%);
+    bottom: -25vw; right: -15vw;
+    animation: drift2 22s ease-in-out infinite alternate;
+  }
+  .aurora .a3 {
+    position: absolute; width: 40vw; height: 40vw; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,45,154,.35), transparent 60%);
+    filter: blur(100px); top: 40%; left: 55%;
+    animation: drift3 26s ease-in-out infinite alternate;
+  }
+  @keyframes drift1 { to { transform: translate(15vw, 12vh) scale(1.15); } }
+  @keyframes drift2 { to { transform: translate(-12vw, -10vh) scale(1.2); } }
+  @keyframes drift3 { to { transform: translate(-20vw, 15vh) scale(.85); } }
+
+  /* ---------- NOISE + GRID ---------- */
+  .noise {
+    position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .05;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .grid-overlay {
+    position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(139,92,246,.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(139,92,246,.06) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 75%);
+  }
+
+  #particles { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
+
+  /* ---------- CURSOR ---------- */
+  .cursor-dot {
+    position: fixed; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--cyan); z-index: 9999; pointer-events: none;
+    transform: translate(-50%, -50%);
+    mix-blend-mode: screen;
+  }
+  .cursor-glow {
+    position: fixed; width: 300px; height: 300px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(139,92,246,.18), transparent 65%);
+    z-index: 9998; pointer-events: none;
+    transform: translate(-50%, -50%);
+  }
+
+  /* ---------- NAV ---------- */
+  .nav-glass {
+    background: rgba(6,6,15,.55);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid rgba(139,92,246,.15);
+  }
+  .nav-link { position: relative; transition: color .3s; }
+  .nav-link::after {
+    content: ''; position: absolute; left: 0; bottom: -4px; height: 2px; width: 0;
+    background: linear-gradient(90deg, var(--violet), var(--cyan));
+    transition: width .3s ease; border-radius: 2px;
+  }
+  .nav-link:hover { color: var(--cyan); }
+  .nav-link:hover::after { width: 100%; }
+
+  /* ---------- BUTTONS ---------- */
+  .btn-primary {
+    position: relative;
+    background: linear-gradient(135deg, var(--violet), var(--pink));
+    color: white; overflow: hidden;
+    transition: transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s ease;
+    box-shadow: 0 0 0 1px rgba(255,255,255,.1) inset, 0 10px 40px -10px rgba(139,92,246,.6);
+  }
+  .btn-primary::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--cyan), var(--violet));
+    opacity: 0; transition: opacity .35s ease;
+  }
+  .btn-primary:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 0 0 1px rgba(255,255,255,.15) inset, 0 18px 50px -10px rgba(34,211,238,.55); }
+  .btn-primary:hover::before { opacity: 1; }
+  .btn-primary > * { position: relative; z-index: 1; }
+
+  .btn-ghost {
+    border: 1px solid rgba(255,255,255,.2);
+    background: rgba(255,255,255,.04);
+    backdrop-filter: blur(8px);
+    transition: all .3s ease;
+  }
+  .btn-ghost:hover {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    box-shadow: 0 0 25px -5px rgba(34,211,238,.4), 0 0 0 1px rgba(34,211,238,.3) inset;
+    transform: translateY(-3px);
+  }
+
+  /* ---------- TEXT ---------- */
+  .grad-text {
+    background: linear-gradient(90deg, var(--violet), var(--cyan), var(--fuchsia), var(--violet));
+    background-size: 300% 100%;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: gradShift 6s linear infinite;
+  }
+  @keyframes gradShift { to { background-position: 300% 0; } }
+
+  .grad-outline {
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(240,171,252,.7);
+  }
+
+  .section-tag {
+    display: inline-flex; align-items: center; gap: .5rem;
+    font-size: .7rem; font-weight: 700; letter-spacing: .25em;
+    padding: .45rem 1rem; border-radius: 999px;
+    border: 1px solid rgba(139,92,246,.35);
+    background: rgba(139,92,246,.1);
+    color: var(--fuchsia);
+  }
+  .section-tag::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--cyan); box-shadow: 0 0 10px var(--cyan);
+    animation: blink 1.6s ease-in-out infinite;
+  }
+  @keyframes blink { 50% { opacity: .3; } }
+
+  /* ---------- REVEAL ---------- */
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity .9s cubic-bezier(.22,1,.36,1), transform .9s cubic-bezier(.22,1,.36,1); }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ---------- GLASS / CARDS ---------- */
+  .glass {
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.09);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .glow-card {
+    position: relative; border-radius: 24px;
+    background: rgba(255,255,255,.03);
+    border: 1px solid rgba(255,255,255,.08);
+    transition: transform .4s cubic-bezier(.22,1,.36,1), border-color .4s, box-shadow .4s;
+    overflow: hidden;
+  }
+  .glow-card::before {
+    content: ''; position: absolute; inset: 0; border-radius: inherit; opacity: 0;
+    background: radial-gradient(400px circle at var(--mx,50%) var(--my,50%), rgba(139,92,246,.18), transparent 45%);
+    transition: opacity .4s; pointer-events: none;
+  }
+  .glow-card:hover::before { opacity: 1; }
+  .glow-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(139,92,246,.45);
+    box-shadow: 0 25px 60px -20px rgba(139,92,246,.35);
+  }
+
+  .tilt { transform-style: preserve-3d; will-change: transform; transition: transform .15s ease-out; }
+
+  /* ---------- IMAGE CARDS ---------- */
+  .img-card {
+    border-radius: 24px; overflow: hidden; position: relative;
+    box-shadow: 0 30px 70px -25px rgba(0,0,0,.7);
+  }
+  .img-card img { transition: transform .8s cubic-bezier(.22,1,.36,1), filter .6s; filter: saturate(1.15) contrast(1.05); }
+  .img-card:hover img { transform: scale(1.06); filter: saturate(1.35) contrast(1.08); }
+  .img-card::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(180deg, transparent 55%, rgba(6,6,15,.85));
+  }
+  .duotone::before {
+    content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: linear-gradient(135deg, rgba(139,92,246,.35), rgba(34,211,238,.15) 50%, rgba(255,45,154,.25));
+    mix-blend-mode: overlay;
+  }
+  .neon-frame {
+    position: relative; border-radius: 26px; padding: 1.5px;
+    background: linear-gradient(135deg, var(--violet), transparent 40%, transparent 60%, var(--cyan));
+  }
+  .neon-frame .img-card { border-radius: 24px; }
+
+  /* ---------- MARQUEE ---------- */
+  .marquee-wrap {
+    border-top: 1px solid rgba(255,255,255,.08);
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    background: rgba(255,255,255,.02);
+    overflow: hidden; white-space: nowrap;
+  }
+  .marquee {
+    display: inline-flex; animation: marquee 28s linear infinite;
+  }
+  .marquee span {
+    display: inline-flex; align-items: center; gap: 1.5rem;
+    padding: 1.1rem 1.5rem; font-family: 'Space Grotesk';
+    font-weight: 600; font-size: 1rem; letter-spacing: .08em;
+    color: rgba(255,255,255,.55); text-transform: uppercase;
+  }
+  .marquee .dot { color: var(--cyan); text-shadow: 0 0 12px var(--cyan); }
+  @keyframes marquee { to { transform: translateX(-50%); } }
+
+  /* ---------- STATS ---------- */
+  .stat-card {
+    border-radius: 20px; padding: 1.25rem;
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.09);
+    backdrop-filter: blur(10px);
+    transition: all .35s ease;
+  }
+  .stat-card:hover { border-color: rgba(34,211,238,.5); box-shadow: 0 0 30px -8px rgba(34,211,238,.4); transform: translateY(-4px); }
+
+  /* ---------- STEPS ---------- */
+  .step-num {
+    font-family: 'Space Grotesk'; font-weight: 700; font-size: 3.2rem; line-height: 1;
+    background: linear-gradient(135deg, rgba(139,92,246,.9), rgba(34,211,238,.4));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .step-line {
+    position: absolute; top: 3.4rem; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(139,92,246,.4), rgba(34,211,238,.4), transparent);
+  }
+
+  /* ---------- SERVICE ICON ---------- */
+  .icon-chip {
+    width: 52px; height: 52px; border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, rgba(139,92,246,.25), rgba(34,211,238,.12));
+    border: 1px solid rgba(139,92,246,.4);
+    color: var(--fuchsia);
+    box-shadow: 0 0 24px -6px rgba(139,92,246,.5);
+    transition: all .35s ease;
+  }
+  .glow-card:hover .icon-chip {
+    transform: scale(1.1) rotate(-6deg);
+    box-shadow: 0 0 34px -4px rgba(34,211,238,.6);
+    color: var(--cyan);
+  }
+
+  /* ---------- PULSE DOT ---------- */
+  .pulse-dot::before {
+    content: ''; position: absolute; inset: 0; border-radius: 50%;
+    background: var(--lime); opacity: .5; animation: pulse 2s ease-out infinite;
+  }
+  @keyframes pulse { 0% { transform: scale(1); opacity: .6; } 100% { transform: scale(3); opacity: 0; } }
+
+  /* ---------- FLOATING ---------- */
+  @keyframes floaty { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-12px) rotate(1deg); } }
+  .floaty { animation: floaty 5s ease-in-out infinite; }
+  .floaty-2 { animation: floaty 6.5s ease-in-out infinite reverse; }
+
+  /* ---------- SCROLLBAR ---------- */
+  ::-webkit-scrollbar { width: 9px; }
+  ::-webkit-scrollbar-track { background: #0a0a16; }
+  ::-webkit-scrollbar-thumb { background: linear-gradient(var(--violet), var(--cyan)); border-radius: 10px; }
+
+  ::selection { background: rgba(139,92,246,.5); color: white; }
+
+  input, textarea { cursor: text; }
+  .field {
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.1);
+    transition: all .3s ease;
+  }
+  .field:focus {
+    outline: none; border-color: var(--violet);
+    box-shadow: 0 0 0 4px rgba(139,92,246,.18), 0 0 24px -6px rgba(139,92,246,.5);
+    background: rgba(139,92,246,.06);
+  }
+
+  .big-cta {
+    font-size: clamp(3rem, 9vw, 8rem);
+    line-height: .95; letter-spacing: -.03em;
+  }
+</style>
+</head>
+<body class="relative">
+
+<div class="aurora"><div class="a3"></div></div>
+<div class="grid-overlay"></div>
+<div class="noise"></div>
+<canvas id="particles"></canvas>
+<div class="cursor-glow" id="cursorGlow"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+
+<!-- NAVBAR -->
+<nav class="nav-glass fixed top-0 left-0 right-0 z-50">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10 py-4 flex items-center justify-between">
+    <a href="#" class="flex items-center gap-2.5 group">
+      <div class="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold font-display bg-gradient-to-br from-[#8B5CF6] to-[#FF2D9A] shadow-[0_0_20px_rgba(139,92,246,.6)] group-hover:rotate-12 transition-transform duration-300">JL</div>
+      <span class="font-display font-bold text-lg tracking-tight hidden sm:inline">Joel Ludeña<span class="grad-text">.</span></span>
+    </a>
+    <div class="hidden lg:flex items-center gap-8 text-sm font-medium text-white/70">
+      <a href="#sobre-mi" class="nav-link">Sobre mí</a>
+      <a href="#servicios" class="nav-link">Servicios</a>
+      <a href="#proceso" class="nav-link">Cómo trabajo</a>
+      <a href="#por-que" class="nav-link">Por qué yo</a>
+      <a href="#contacto" class="nav-link">Contacto</a>
+    </div>
+    <a href="#contacto" class="btn-primary px-6 py-2.5 rounded-full text-sm font-bold"><span>Hablemos ↗</span></a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="relative pt-36 pb-16 lg:pt-44 lg:pb-24 overflow-hidden">
+  <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-10">
+    <div class="text-center max-w-4xl mx-auto reveal">
+      <div class="section-tag mb-8">
+        Digitalización para negocios locales · Mallorca
+      </div>
+      <h1 class="font-display font-bold text-5xl md:text-7xl lg:text-8xl leading-[1.02] tracking-tight">
+        Tu negocio,<br/>
+        <span class="grad-text">imparable</span> en<br/>
+        <span class="grad-outline">internet.</span>
+      </h1>
+      <p class="mt-8 text-lg md:text-xl text-white/60 max-w-2xl mx-auto leading-relaxed">
+        Webs y presencia digital de otro nivel para comercios, restaurantes y profesionales de Mallorca. Sin complicaciones. Sin tecnicismos. Solo resultados.
+      </p>
+      <div class="mt-10 flex flex-wrap justify-center gap-4">
+        <a href="https://wa.me/34616944451" target="_blank" class="btn-primary px-8 py-4 rounded-full font-bold flex items-center gap-2.5 text-base">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+          <span>Despega por WhatsApp</span>
+        </a>
+        <a href="#servicios" class="btn-ghost px-8 py-4 rounded-full font-bold text-base">Explorar servicios</a>
+      </div>
+
+      <div class="mt-14 grid grid-cols-3 gap-4 max-w-xl mx-auto">
+        <div class="stat-card reveal">
+          <div class="font-display font-bold text-3xl grad-text">18</div>
+          <div class="text-xs text-white/50 mt-1">años, nativo digital</div>
+        </div>
+        <div class="stat-card reveal" style="transition-delay:.1s">
+          <div class="font-display font-bold text-3xl grad-text">100%</div>
+          <div class="text-xs text-white/50 mt-1">trato personalizado</div>
+        </div>
+        <div class="stat-card reveal" style="transition-delay:.2s">
+          <div class="font-display font-bold text-3xl grad-text flex items-center justify-center gap-1">
+            <span class="relative inline-block w-3 h-3 rounded-full bg-[#A3E635] pulse-dot"></span>
+          </div>
+          <div class="text-xs text-white/50 mt-1">Esporles, Mallorca</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HERO VISUAL -->
+    <div class="mt-16 lg:mt-20 relative max-w-5xl mx-auto reveal">
+      <div class="absolute -inset-8 bg-gradient-to-r from-[#8B5CF6]/25 via-[#FF2D9A]/15 to-[#22D3EE]/25 rounded-[40px] blur-3xl"></div>
+      <div class="neon-frame tilt" data-tilt>
+        <div class="img-card duotone">
+          <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1400&auto=format&fit=crop" alt="Tecnología y futuro digital" class="w-full h-[340px] md:h-[440px] object-cover" />
+          <div class="absolute bottom-5 left-5 z-10 glass rounded-2xl p-4 flex items-center gap-3 floaty">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#A3E635] to-[#22D3EE] flex items-center justify-center text-black font-bold shadow-[0_0_20px_rgba(163,230,53,.5)]">✓</div>
+            <div>
+              <div class="font-semibold text-sm">Proyecto entregado</div>
+              <div class="text-xs text-white/50">Web para restaurante local</div>
+            </div>
+          </div>
+          <div class="absolute top-5 right-5 z-10 glass rounded-2xl px-4 py-3 floaty-2 hidden md:block">
+            <div class="text-xs text-white/50">Visibilidad online</div>
+            <div class="font-display font-bold text-lg text-[#22D3EE]">+240% <span class="text-xs text-white/40 font-normal">alcance</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap my-8">
+  <div class="marquee">
+    <span>Webs que venden <i class="dot">✦</i></span>
+    <span>Diseño de impacto <i class="dot">✦</i></span>
+    <span>Sin tecnicismos <i class="dot">✦</i></span>
+    <span>Precios honestos <i class="dot">✦</i></span>
+    <span>Hecho en Mallorca <i class="dot">✦</i></span>
+    <span>Trato directo <i class="dot">✦</i></span>
+    <span>Webs que venden <i class="dot">✦</i></span>
+    <span>Diseño de impacto <i class="dot">✦</i></span>
+    <span>Sin tecnicismos <i class="dot">✦</i></span>
+    <span>Precios honestos <i class="dot">✦</i></span>
+    <span>Hecho en Mallorca <i class="dot">✦</i></span>
+    <span>Trato directo <i class="dot">✦</i></span>
+  </div>
+</div>
+
+<!-- SOBRE MÍ -->
+<section id="sobre-mi" class="relative py-24 lg:py-32">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10">
+    <div class="grid lg:grid-cols-12 gap-14 items-center">
+      <div class="lg:col-span-5 reveal">
+        <div class="relative">
+          <div class="absolute -inset-6 bg-gradient-to-br from-[#FF2D9A]/25 to-[#22D3EE]/20 rounded-[40px] blur-3xl"></div>
+          <div class="neon-frame tilt" data-tilt>
+            <div class="img-card duotone">
+              <img src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=800&auto=format&fit=crop" alt="Joel trabajando en proyectos digitales" class="w-full h-[520px] object-cover" />
+              <div class="absolute bottom-5 left-5 right-5 z-10 glass rounded-2xl p-4">
+                <div class="font-display font-bold">Joel Ludeña García</div>
+                <div class="text-xs text-white/50">Nativo digital · Esporles</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-7 reveal">
+        <div class="section-tag mb-5">Sobre mí</div>
+        <h2 class="font-display font-bold text-4xl md:text-5xl lg:text-6xl tracking-tight leading-[1.08]">
+          Soy Joel, y cada proyecto lo vivo <span class="grad-text">como si fuera el mío.</span>
+        </h2>
+        <p class="mt-7 text-lg text-white/60 leading-relaxed">
+          Tengo 18 años y vivo en Esporles. Crecí con la tecnología en la mano, así que para mí lo digital no es una asignatura: <strong class="text-white">es mi idioma</strong>. Estoy al día de lo que funciona hoy y tengo la energía para volcarme en cada proyecto como si fuera el primero.
+        </p>
+        <p class="mt-4 text-lg text-white/60 leading-relaxed">
+          No soy una gran agencia, y precisamente esa es la ventaja: hablas siempre conmigo, entiendo tu negocio de cerca y te lo explico todo con claridad, <strong class="text-white">sin jerga técnica</strong>.
+        </p>
+
+        <div class="mt-9 grid sm:grid-cols-2 gap-4">
+          <div class="glow-card p-5 flex items-start gap-4">
+            <div class="icon-chip flex-shrink-0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            <div>
+              <div class="font-semibold">Nativo digital</div>
+              <div class="text-sm text-white/50 mt-1">Al día con las últimas tendencias</div>
+            </div>
+          </div>
+          <div class="glow-card p-5 flex items-start gap-4">
+            <div class="icon-chip flex-shrink-0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            </div>
+            <div>
+              <div class="font-semibold">Trato humano</div>
+              <div class="text-sm text-white/50 mt-1">Siempre conmigo, nunca con un bot</div>
+            </div>
+          </div>
+          <div class="glow-card p-5 flex items-start gap-4">
+            <div class="icon-chip flex-shrink-0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div>
+              <div class="font-semibold">Conozco Mallorca</div>
+              <div class="text-sm text-white/50 mt-1">Entiendo el tejido local</div>
+            </div>
+          </div>
+          <div class="glow-card p-5 flex items-start gap-4">
+            <div class="icon-chip flex-shrink-0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            </div>
+            <div>
+              <div class="font-semibold">Disponibilidad total</div>
+              <div class="text-sm text-white/50 mt-1">Energía y compromiso real</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICIOS -->
+<section id="servicios" class="relative py-24 lg:py-32">
+  <div class="relative max-w-7xl mx-auto px-6 lg:px-10">
+    <div class="text-center mb-16 reveal">
+      <div class="section-tag mb-5">Servicios</div>
+      <h2 class="font-display font-bold text-4xl md:text-5xl lg:text-6xl tracking-tight">Lo que puedo construir<br/><span class="grad-text">para tu negocio</span></h2>
+      <p class="mt-5 text-white/50 max-w-2xl mx-auto text-lg">Soluciones concretas, sin extras innecesarios. Pagas solo por lo que de verdad necesitas.</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="glow-card reveal group tilt" data-tilt>
+        <div class="img-card duotone rounded-b-none">
+          <img src="https://images.unsplash.com/photo-1547658719-da2b51169166?w=700&auto=format&fit=crop" alt="Webs para negocios" class="w-full h-56 object-cover" />
+        </div>
+        <div class="p-7">
+          <div class="icon-chip mb-5 -mt-16 relative z-10 bg-[#0b0b18]">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          </div>
+          <h3 class="font-display font-bold text-2xl mb-3">Webs para negocios</h3>
+          <p class="text-white/50 leading-relaxed">Páginas rápidas, claras y a medida que dan confianza y se ven perfectas en el móvil. Listas para que te encuentren y te contacten.</p>
+          <div class="mt-5 text-sm font-semibold text-[#22D3EE] opacity-0 group-hover:opacity-100 transition-opacity">Quiero mi web →</div>
+        </div>
+      </div>
+
+      <div class="glow-card reveal group tilt" data-tilt style="transition-delay:.1s">
+        <div class="img-card duotone rounded-b-none">
+          <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=700&auto=format&fit=crop" alt="Asesoría en digitalización" class="w-full h-56 object-cover" />
+        </div>
+        <div class="p-7">
+          <div class="icon-chip mb-5 -mt-16 relative z-10 bg-[#0b0b18]">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+          </div>
+          <h3 class="font-display font-bold text-2xl mb-3">Asesoría en digitalización</h3>
+          <p class="text-white/50 leading-relaxed">Te ayudo a poner orden: Google, redes, reseñas y herramientas. Un plan sencillo y realista para empezar a estar presente online.</p>
+          <div class="mt-5 text-sm font-semibold text-[#22D3EE] opacity-0 group-hover:opacity-100 transition-opacity">Quiero mi plan →</div>
+        </div>
+      </div>
+
+      <div class="glow-card reveal group tilt" data-tilt style="transition-delay:.2s">
+        <div class="img-card duotone rounded-b-none">
+          <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=700&auto=format&fit=crop" alt="Acompañamiento continuo" class="w-full h-56 object-cover" />
+        </div>
+        <div class="p-7">
+          <div class="icon-chip mb-5 -mt-16 relative z-10 bg-[#0b0b18]">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <h3 class="font-display font-bold text-2xl mb-3">Acompañamiento continuo</h3>
+          <p class="text-white/50 leading-relaxed">No te dejo solo después de entregar. Mantengo, actualizo y resuelvo dudas para que tu presencia online no se quede anticuada.</p>
+          <div class="mt-5 text-sm font-semibold text-[#22D3EE] opacity-0 group-hover:opacity-100 transition-opacity">Quiero soporte →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CÓMO TRABAJO -->
+<section id="proceso" class="relative py-24 lg:py-32">
+  <div class="relative max-w-7xl mx-auto px-6 lg:px-10">
+    <div class="text-center mb-16 reveal">
+      <div class="section-tag mb-5">Cómo trabajo</div>
+      <h2 class="font-display font-bold text-4xl md:text-5xl lg:text-6xl tracking-tight">Cuatro pasos.<br/><span class="grad-text">Cero sorpresas.</span></h2>
+      <p class="mt-5 text-white/50 max-w-2xl mx-auto text-lg">Un proceso claro y transparente, diseñado para que te sientas acompañado en cada momento.</p>
+    </div>
+
+    <div class="relative grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="hidden lg:block step-line"></div>
+
+      <div class="glow-card reveal p-7 relative">
+        <div class="step-num mb-5">01</div>
+        <h3 class="font-display font-bold text-xl mb-2">Contacto</h3>
+        <p class="text-sm text-white/50 leading-relaxed">Me escribes por WhatsApp o llamas. Sin formularios interminables: empezamos con una conversación cercana.</p>
+      </div>
+
+      <div class="glow-card reveal p-7 relative" style="transition-delay:.1s">
+        <div class="step-num mb-5">02</div>
+        <h3 class="font-display font-bold text-xl mb-2">Diagnóstico gratuito</h3>
+        <p class="text-sm text-white/50 leading-relaxed">Miro tu situación actual y te digo con sinceridad qué necesitas y qué no. Sin compromiso.</p>
+      </div>
+
+      <div class="glow-card reveal p-7 relative" style="transition-delay:.2s">
+        <div class="step-num mb-5">03</div>
+        <h3 class="font-display font-bold text-xl mb-2">Propuesta a medida</h3>
+        <p class="text-sm text-white/50 leading-relaxed">Te paso una propuesta clara, con precio cerrado y plazos. Tú decides con todo sobre la mesa.</p>
+      </div>
+
+      <div class="glow-card reveal p-7 relative" style="transition-delay:.3s">
+        <div class="step-num mb-5">04</div>
+        <h3 class="font-display font-bold text-xl mb-2">Desarrollo y entrega</h3>
+        <p class="text-sm text-white/50 leading-relaxed">Construyo, te enseño avances y entrego. Y sigo disponible para lo que surja después.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- POR QUÉ YO -->
+<section id="por-que" class="relative py-24 lg:py-32 overflow-hidden">
+  <div class="absolute inset-0" style="background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(139,92,246,.12), transparent 70%);"></div>
+  <div class="relative max-w-7xl mx-auto px-6 lg:px-10">
+    <div class="grid lg:grid-cols-2 gap-14 items-center">
+      <div class="reveal">
+        <div class="section-tag mb-5">Por qué trabajar conmigo</div>
+        <h2 class="font-display font-bold text-4xl md:text-5xl lg:text-6xl tracking-tight leading-[1.08]">
+          Cercanía de verdad,<br/>
+          <span class="grad-text">no un número de cliente.</span>
+        </h2>
+        <p class="mt-6 text-lg text-white/50">Lo que una gran agencia no te puede dar.</p>
+
+        <div class="mt-9 space-y-4">
+          <div class="glow-card p-5 flex items-start gap-4">
+            <div class="icon-chip flex-shrink-0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            </div>
+            <div>
+              <h3 class="font-display font-bold text-lg mb-1">Trato directo</h3>
+              <p class="text-sm text-white/50">Hablas conmigo de principio a fin. Nada de intermediarios ni respuestas automáticas.</p>
+            </div>
+          </div>
+
+          <div class="glow-card p-5 flex items-start gap-4">
+            <div class="icon-chip flex-shrink-0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            </div>
+            <div>
+              <h3 class="font-display font-bold text-lg mb-1">Precios para pequeños negocios</h3>
+              <p class="text-sm text-white/50">Presupuestos adaptados a la realidad de un comercio local, no a la de una multinacional.</p>
+            </div>
+          </div>
+
+          <div class="glow-card p-5 flex items-start gap-4">
+            <div class="icon-chip flex-shrink-0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div>
+              <h3 class="font-display font-bold text-lg mb-1">Conozco el terreno</h3>
+              <p class="text-sm text-white/50">Vivo aquí. Entiendo el tejido local de Mallorca y a quién te diriges.</p>
+            </div>
+          </div>
+
+          <div class="glow-card p-5 flex items-start gap-4">
+            <div class="icon-chip flex-shrink-0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            <div>
+              <h3 class="font-display font-bold text-lg mb-1">Respuesta rápida</h3>
+              <p class="text-sm text-white/50">Te contesto pronto y resuelvo sin hacerte esperar días por un correo.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal">
+        <div class="relative">
+          <div class="absolute -inset-6 bg-gradient-to-br from-[#8B5CF6]/30 to-[#FF2D9A]/20 rounded-[40px] blur-3xl"></div>
+          <div class="neon-frame tilt" data-tilt>
+            <div class="img-card duotone">
+              <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&auto=format&fit=crop" alt="Reunión cercana con cliente" class="w-full h-[600px] object-cover" />
+              <div class="absolute top-6 left-6 z-10 glass rounded-2xl p-4 max-w-xs floaty">
+                <div class="flex items-center gap-2 mb-2">
+                  <div class="flex text-[#A3E635] text-sm" style="text-shadow:0 0 10px rgba(163,230,53,.6)">★★★★★</div>
+                  <span class="text-xs font-semibold">5.0</span>
+                </div>
+                <p class="text-xs text-white/70 leading-relaxed">"Joel entiende lo que necesita un negocio local. Trato excelente y resultado impecable."</p>
+                <div class="mt-2 text-xs font-semibold text-[#22D3EE]">— Cliente de Esporles</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section id="contacto" class="relative py-24 lg:py-32 overflow-hidden">
+  <div class="relative max-w-7xl mx-auto px-6 lg:px-10">
+    <div class="text-center mb-16 reveal">
+      <div class="section-tag mb-5">Contacto</div>
+      <h2 class="font-display font-bold big-cta tracking-tight">
+        ¿HACEMOS<br/><span class="grad-text">DESPEGAR</span><br/>TU NEGOCIO?
+      </h2>
+      <p class="mt-6 text-white/50 max-w-2xl mx-auto text-lg">El primer paso es gratis y sin compromiso. Escríbeme y vemos qué necesitas. Te atiendo en <strong class="text-white">catalán, español e inglés</strong>.</p>
+    </div>
+
+    <div class="grid lg:grid-cols-5 gap-8">
+      <div class="lg:col-span-2 reveal space-y-4">
+        <a href="https://wa.me/34616944451" target="_blank" class="glow-card block p-5 group">
+          <div class="flex items-center gap-4">
+            <div class="icon-chip flex-shrink-0 group-hover:scale-110 transition">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+            </div>
+            <div>
+              <div class="font-semibold">WhatsApp</div>
+              <div class="text-sm text-white/50">616 94 44 51</div>
+            </div>
+          </div>
+        </a>
+
+        <a href="tel:+34616944451" class="glow-card block p-5 group">
+          <div class="flex items-center gap-4">
+            <div class="icon-chip flex-shrink-0 group-hover:scale-110 transition">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+            </div>
+            <div>
+              <div class="font-semibold">Teléfono</div>
+              <div class="text-sm text-white/50">616 94 44 51</div>
+            </div>
+          </div>
+        </a>
+
+        <a href="mailto:joeldigitalizaciones@gmail.com" class="glow-card block p-5 group">
+          <div class="flex items-center gap-4">
+            <div class="icon-chip flex-shrink-0 group-hover:scale-110 transition">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div>
+              <div class="font-semibold">Email</div>
+              <div class="text-sm text-white/50 break-all">joeldigitalizaciones@gmail.com</div>
+            </div>
+          </div>
+        </a>
+
+        <div class="glow-card p-5">
+          <div class="flex items-center gap-4">
+            <div class="icon-chip flex-shrink-0">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div>
+              <div class="font-semibold">Ubicación</div>
+              <div class="text-sm text-white/50">Esporles, Mallorca · Illes Balears</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-3 reveal">
+        <form class="glass rounded-3xl p-8 relative overflow-hidden" onsubmit="handleSubmit(event)">
+          <div class="absolute -top-24 -right-24 w-64 h-64 rounded-full bg-[#8B5CF6]/20 blur-3xl pointer-events-none"></div>
+          <h3 class="font-display font-bold text-2xl mb-6 relative">Envíame un mensaje</h3>
+          <div class="space-y-4 relative">
+            <div>
+              <label class="block text-sm font-semibold mb-2 text-white/70">Nombre</label>
+              <input type="text" required class="field w-full px-5 py-3.5 rounded-xl text-white placeholder-white/30" placeholder="Tu nombre" />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-2 text-white/70">Negocio</label>
+              <input type="text" class="field w-full px-5 py-3.5 rounded-xl text-white placeholder-white/30" placeholder="Nombre de tu negocio" />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-2 text-white/70">Mensaje</label>
+              <textarea required rows="4" class="field w-full px-5 py-3.5 rounded-xl text-white placeholder-white/30 resize-none" placeholder="Cuéntame qué necesitas..."></textarea>
+            </div>
+            <button type="submit" class="btn-primary w-full px-6 py-4 rounded-xl font-bold text-base"><span>Enviar mensaje ✦</span></button>
+          </div>
+          <div id="formMsg" class="mt-4 text-sm font-semibold text-[#A3E635] hidden relative">✓ ¡Mensaje enviado! Te contesto en menos de 24h.</div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="border-t border-white/10 bg-black/30 backdrop-blur">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10 py-12 grid md:grid-cols-4 gap-8">
+    <div class="md:col-span-2">
+      <div class="flex items-center gap-2.5 mb-4">
+        <div class="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold font-display bg-gradient-to-br from-[#8B5CF6] to-[#FF2D9A] shadow-[0_0_20px_rgba(139,92,246,.5)]">JL</div>
+        <span class="font-display font-bold text-lg">Joel Ludeña García</span>
+      </div>
+      <p class="text-sm text-white/40 leading-relaxed max-w-md">Digitalización para negocios locales · Mallorca. Webs y contenido digital pensados para comercios, restaurantes y profesionales.</p>
+      <div class="mt-4 flex items-center gap-2 text-xs text-white/40">
+        <span>Español</span><span class="text-[#8B5CF6]">✦</span>
+        <span>Català</span><span class="text-[#22D3EE]">✦</span>
+        <span>English</span>
+      </div>
+    </div>
+    <div>
+      <div class="font-semibold mb-3 text-sm text-white/80">Navegación</div>
+      <ul class="space-y-2 text-sm text-white/40">
+        <li><a href="#sobre-mi" class="hover:text-[#22D3EE] transition">Sobre mí</a></li>
+        <li><a href="#servicios" class="hover:text-[#22D3EE] transition">Servicios</a></li>
+        <li><a href="#proceso" class="hover:text-[#22D3EE] transition">Cómo trabajo</a></li>
+        <li><a href="#por-que" class="hover:text-[#22D3EE] transition">Por qué yo</a></li>
+        <li><a href="#contacto" class="hover:text-[#22D3EE] transition">Contacto</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="font-semibold mb-3 text-sm text-white/80">Contacto directo</div>
+      <ul class="space-y-2 text-sm text-white/40">
+        <li><a href="https://wa.me/34616944451" class="hover:text-[#22D3EE] transition">WhatsApp</a></li>
+        <li><a href="tel:+34616944451" class="hover:text-[#22D3EE] transition">616 94 44 51</a></li>
+        <li><a href="mailto:joeldigitalizaciones@gmail.com" class="hover:text-[#22D3EE] transition">joeldigitalizaciones@gmail.com</a></li>
+        <li>Esporles, Mallorca</li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-white/10 py-6 text-center text-xs text-white/30">
+    © 2026 Joel Ludeña García. Todos los derechos reservados.
+  </div>
+</footer>
+
+<script>
+  // ---------- REVEAL ----------
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // ---------- FORM ----------
+  function handleSubmit(e) {
+    e.preventDefault();
+    const msg = document.getElementById('formMsg');
+    msg.classList.remove('hidden');
+    e.target.reset();
+    setTimeout(() => msg.classList.add('hidden'), 5000);
+  }
+
+  // ---------- NAV SHADOW ----------
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 20) nav.style.boxShadow = '0 10px 40px -15px rgba(139,92,246,.35)';
+    else nav.style.boxShadow = 'none';
+  });
+
+  // ---------- CURSOR ----------
+  const dot = document.getElementById('cursorDot');
+  const glow = document.getElementById('cursorGlow');
+  let mx = innerWidth/2, my = innerHeight/2, gx = mx, gy = my;
+  addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; dot.style.left = mx+'px'; dot.style.top = my+'px'; });
+  (function animCursor(){
+    gx += (mx-gx)*.08; gy += (my-gy)*.08;
+    glow.style.left = gx+'px'; glow.style.top = gy+'px';
+    requestAnimationFrame(animCursor);
+  })();
+
+  // ---------- TILT ----------
+  document.querySelectorAll('[data-tilt]').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left)/r.width - .5;
+      const y = (e.clientY - r.top)/r.height - .5;
+      card.style.transform = `perspective(1000px) rotateY(${x*6}deg) rotateX(${-y*6}deg)`;
+      card.style.setProperty('--mx', ((x+.5)*100)+'%');
+      card.style.setProperty('--my', ((y+.5)*100)+'%');
+    });
+    card.addEventListener('mouseleave', () => { card.style.transform = 'perspective(1000px) rotateY(0) rotateX(0)'; });
+  });
+
+  // ---------- GLOW CARDS SPOTLIGHT ----------
+  document.querySelectorAll('.glow-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', ((e.clientX - r.left)/r.width*100)+'%');
+      card.style.setProperty('--my', ((e.clientY - r.top)/r.height*100)+'%');
+    });
+  });
+
+  // ---------- PARTICLES ----------
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let W, H, parts = [];
+  function resize(){ W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+  resize(); addEventListener('resize', resize);
+  const COLORS = ['rgba(139,92,246,', 'rgba(34,211,238,', 'rgba(240,171,252,'];
+  for (let i = 0; i < 70; i++) {
+    parts.push({
+      x: Math.random()*innerWidth, y: Math.random()*innerHeight,
+      r: Math.random()*1.8 + .4,
+      vx: (Math.random()-.5)*.35, vy: (Math.random()-.5)*.35,
+      c: COLORS[Math.floor(Math.random()*3)],
+      a: Math.random()*.5 + .15
+    });
+  }
+  (function draw(){
+    ctx.clearRect(0,0,W,H);
+    parts.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = p.c + p.a + ')';
+      ctx.fill();
+    });
+    // connective lines
+    for (let i = 0; i < parts.length; i++) {
+      for (let j = i+1; j < parts.length; j++) {
+        const dx = parts[i].x - parts[j].x, dy = parts[i].y - parts[j].y;
+        const d = Math.hypot(dx, dy);
+        if (d < 110) {
+          ctx.beginPath();
+          ctx.strokeStyle = 'rgba(139,92,246,' + (0.12*(1-d/110)) + ')';
+          ctx.lineWidth = .6;
+          ctx.moveTo(parts[i].x, parts[i].y);
+          ctx.lineTo(parts[j].x, parts[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  })();
+</script>
+</body>
+</html>
